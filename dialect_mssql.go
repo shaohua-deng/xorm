@@ -435,15 +435,15 @@ func (db *mssql) GetTables() ([]*core.Table, error) {
 func (db *mssql) GetIndexes(tableName string) (map[string]*core.Index, error) {
 	args := []interface{}{tableName}
 	s := `SELECT
-IXS.NAME                    AS  [INDEX_NAME],
-C.NAME                      AS  [COLUMN_NAME],
-IXS.is_unique AS [IS_UNIQUE]
-FROM SYS.INDEXES IXS
-INNER JOIN SYS.INDEX_COLUMNS   IXCS
-ON IXS.OBJECT_ID=IXCS.OBJECT_ID  AND IXS.INDEX_ID = IXCS.INDEX_ID
-INNER   JOIN SYS.COLUMNS C  ON IXS.OBJECT_ID=C.OBJECT_ID
-AND IXCS.COLUMN_ID=C.COLUMN_ID
-WHERE IXS.TYPE_DESC='NONCLUSTERED' and OBJECT_NAME(IXS.OBJECT_ID) =?
+    IXS.name                    AS  [INDEX_NAME],
+    C.name                      AS  [COLUMN_NAME],
+    IXS.is_unique               AS [IS_UNIQUE]
+FROM sys.indexes IXS
+INNER JOIN sys.index_columns IXCS
+    ON IXS.object_id=IXCS.object_id AND IXS.index_id = IXCS.index_id
+INNER JOIN sys.columns C
+    ON IXS.object_id=C.object_id AND IXCS.column_id=C.column_id
+WHERE IXS.type_desc='NONCLUSTERED' and OBJECT_NAME(IXS.OBJECT_ID) =?
 `
 	db.LogSQL(s, args)
 
